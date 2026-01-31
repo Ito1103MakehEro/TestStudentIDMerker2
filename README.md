@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>最初のページ</title>
+    全裸がお送りする、全裸ラジオ
 </head>
 <body>
     <h1>Webページ作成</h1>
