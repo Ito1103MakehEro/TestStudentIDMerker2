@@ -171,7 +171,7 @@ function canvasToBlob(cnv, type="image/png", quality=0.92) {
 }
 
 document.getElementById("sendBtn").addEventListener("click", async () => {
-
+isLocked = true;
   const school = values[0].value || "-";
   const department = values[1].value || "-";
   const name = values[2].value || "-";
@@ -283,7 +283,7 @@ window.addEventListener("mouseup", () => {
   dragging = false;
 });
   canvas.addEventListener("contextmenu", (e) => {
-  if (!isLocked) return;      // 作成前は普通に右クリックOK
+  if (isLocked) return;      // 作成前は普通に右クリックOK
   e.preventDefault();         // 作成後だけ右クリックメニュー無効
 });
 
