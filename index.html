@@ -10,6 +10,13 @@ body { font-family: sans-serif; padding: 30px; }
 canvas { border: 1px solid #333;touch-action: none; }
 input, select, button { width: 260px; margin-bottom: 10px; }
 .small { font-size: 12px; color: #666; width: 260px; }
+  .fieldLabel{
+  display:block;
+  width:260px;
+  font-size:12px;
+  color:#444;
+  margin:6px 0 2px;
+}
 </style>
 </head>
 <body>
@@ -31,8 +38,12 @@ input, select, button { width: 260px; margin-bottom: 10px; }
     <input class="value" placeholder="学校名">
     <input class="value" placeholder="学科（任意）">
     <input class="value" placeholder="名前">
-    <input class="value" type="date" title="生年月日">
-    <input class="value" type="date" title="有効期限">
+   <label class="fieldLabel">生年月日</label>
+    <input class="value" type="date">
+
+    <label class="fieldLabel">有効期限</label>
+    <input class="value" type="date">
+
 
     <input type="file" id="photo" accept="image/*">
 
