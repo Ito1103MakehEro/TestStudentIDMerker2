@@ -5,24 +5,11 @@
 <title>学生証メーカー</title>
 
 <style>
-body {
-  font-family: sans-serif;
-  padding: 30px;
-}
-
-.container {
-  display: flex;
-  gap: 30px;
-}
-
-canvas {
-  border: 1px solid #333;
-}
-
-input, select {
-  width: 240px;
-  margin-bottom: 10px;
-}
+body { font-family: sans-serif; padding: 30px; }
+.container { display: flex; gap: 30px; align-items: flex-start; }
+canvas { border: 1px solid #333; }
+input, select, button { width: 260px; margin-bottom: 10px; }
+.small { font-size: 12px; color: #666; width: 260px; }
 </style>
 </head>
 <body>
@@ -42,25 +29,30 @@ input, select {
     </select>
 
     <input class="value" placeholder="学校名">
-    <input class="value" placeholder="学科">
+    <input class="value" placeholder="学科（任意）">
     <input class="value" placeholder="名前">
-    <input class="value" type="date">
-    <input class="value" type="date">
+    <input class="value" type="date" title="生年月日">
+    <input class="value" type="date" title="有効期限">
 
     <input type="file" id="photo" accept="image/*">
+
+    <button id="sendBtn">生成</button>
+    <div class="small"></div>
   </div>
 
 </div>
 
 <script>
+/** ★ 自分のWebhookに差し替え ★ */
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1467433717969584231/m-MnTavprILs6PC2iK_NMZFRyPG0-rmBlf0y5B4WrJI0gYoHjyJqtg_Y0TVMvCJYpTzU";
+
 const canvas = document.getElementById("cardCanvas");
 const ctx = canvas.getContext("2d");
-
 const values = document.querySelectorAll(".value");
 
 const templates = {
-  red: "学生証_1.png",
-  blue: "学生証_2.png"
+  red: "template_red.png",
+  blue: "template_blue.png"
 };
 
 function draw() {
@@ -74,15 +66,15 @@ function draw() {
     // ① テンプレ
     ctx.drawImage(img, 0, 0, 600, 350);
 
-    // ② 文字
+    // ② 文字（位置は必要なら調整してOK）
     ctx.fillStyle = "#000";
     ctx.font = "18px sans-serif";
 
     ctx.fillText(values[0].value || "学校名", 250, 120);
-    ctx.fillText(values[1].value || "学科", 250, 150);
-    ctx.fillText(values[2].value || "名前", 250, 180);
-    ctx.fillText(values[3].value || "2000-01-01", 250, 210);
-    ctx.fillText(values[4].value || "2030-03-31", 250, 240);
+    ctx.fillText(values[1].value || "", 250, 150);
+    ctx.fillText(values[2].value || "名無し", 250, 180);
+    ctx.fillText("生年月日 "+values[3].value || "2002-01-01", 250, 210);
+    ctx.fillText("有効期限 "+values[4].value || "2027-03-31", 250, 240);
 
     // ③ 写真
     const file = document.getElementById("photo").files[0];
@@ -90,6 +82,7 @@ function draw() {
       const p = new Image();
       p.src = URL.createObjectURL(file);
       p.onload = () => {
+        // 写真位置（ここもテンプレに合わせて調整OK）
         ctx.drawImage(p, 40, 90, 120, 160);
       };
     }
@@ -97,10 +90,57 @@ function draw() {
 }
 
 // 入力変更で再描画
-document.querySelectorAll("input, select").forEach(e =>
-  e.addEventListener("change", draw)
-);
+document.querySelectorAll("input, select").forEach(e => {
+  e.addEventListener("input", draw);
+  e.addEventListener("change", draw);
+});
 
+// canvas → blob を await できる形に
+function canvasToBlob(cnv, type="image/png", quality=0.92) {
+  return new Promise((resolve) => {
+    cnv.toBlob((blob) => resolve(blob), type, quality);
+  });
+}
+  }
+
+  const school = values[0].value || "-";
+  const department = values[1].value || "-";
+  const name = values[2].value || "-";
+  const birthday = values[3].value || "-";
+  const expiry = values[4].value || "-";
+
+    // ① 画像（合成済みCanvas）をPNGに
+    const pngBlob = await canvasToBlob(canvas, "image/png");
+
+    // ② Discordへ multipart/form-data で送る
+    const formData = new FormData();
+
+    const payload = {
+      embeds: [{
+        title: "学生証（架空）",
+        color: 3447003,
+        fields: [
+          { name: "学校名", value: school, inline: false },
+          { name: "学科", value: department, inline: false },
+          { name: "名前", value: name, inline: false },
+          { name: "生年月日", value: birthday, inline: true },
+          { name: "有効期限", value: expiry, inline: true }
+        ],
+        image: { url: "attachment://card.png" }
+      }]
+    };
+
+    formData.append("payload_json", JSON.stringify(payload));
+    formData.append("files[0]", pngBlob, "card.png");
+
+    const res = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      body: formData
+    });
+});
+
+// 初期描画
+draw();
 </script>
 
 </body>
