@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>テストページ</title>
+  <meta charset="UTF-8">
+  <title>カード画面</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fff;
+    }
+
+    .container {
+      display: flex;
+      gap: 40px;
+      padding: 40px;
+      align-items: flex-start;
+    }
+
+    /* 左の画像エリア */
+    .image-box {
+      width: 600px;
+      height: 350px;
+      background-color: #5f9ed6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 20px;
+      border: 1px solid #333;
+    }
+
+    /* 右の情報エリア */
+    .info {
+      display: grid;
+      grid-template-columns: auto 260px;
+      row-gap: 20px;
+      column-gap: 16px;
+      align-items: center;
+    }
+
+    .label {
+      white-space: nowrap;
+    }
+
+    .value {
+      height: 24px;
+      background-color: #bcb8b8;
+    }
+  </style>
 </head>
 <body>
-    <h1>Webページ作成</h1>
-    <p>こんにちは！これは最初のページです。</p>
+
+  <div class="container">
+    <div class="image-box">
+      画像1
+    </div>
+
+    <div class="info">
+      <div class="label">学校名：</div>
+      <div class="value"></div>
+
+      <div class="label">学科（任意）：</div>
+      <div class="value"></div>
+
+      <div class="label">名前：</div>
+      <div class="value"></div>
+
+      <div class="label">生年月日：</div>
+      <div class="value"></div>
+
+      <div class="label">有効期限：</div>
+      <div class="value"></div>
+    </div>
+  </div>
+
 </body>
 </html>
