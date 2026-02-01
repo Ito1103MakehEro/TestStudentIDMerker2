@@ -52,6 +52,17 @@ const templates = {
   red: "学生証_1.png",
   blue: "学生証.png"
 };
+  // ====== 追加：写真の状態 ======
+let photoImg = null;     // アップロード画像を保持
+let photoX = 40;         // 写真のX位置（初期値）
+let photoY = 90;         // 写真のY位置（初期値）
+let photoW = 120;        // 写真の幅
+let photoH = 160;        // 写真の高さ
+
+let dragging = false;    // ドラッグ中か
+let dragOffsetX = 0;     // クリック位置と写真左上の差
+let dragOffsetY = 0;
+// ============================
 
 function draw() {
   const template = document.getElementById("template").value;
@@ -77,15 +88,9 @@ function draw() {
     ctx.fillText("有効期限 "+values[4].value || "2030-03-31", 260, 250);
 
     // ③ 写真
-    const file = document.getElementById("photo").files[0];
-    if (file) {
-      const p = new Image();
-      p.src = URL.createObjectURL(file);
-      p.onload = () => {
-        // 写真位置（ここもテンプレに合わせて調整OK）
-        ctx.drawImage(p, 40, 90, 120, 160);
-      };
-    }
+ if (photoImg) {
+  ctx.drawImage(photoImg, photoX, photoY, photoW, photoH);
+}
   };
 }
 
@@ -94,6 +99,23 @@ document.querySelectorAll("input, select").forEach(e => {
   e.addEventListener("input", draw);
   e.addEventListener("change", draw);
 });
+  // ====== 追加：写真を1回だけ読み込んで保持 ======
+document.getElementById("photo").addEventListener("change", () => {
+  const file = document.getElementById("photo").files[0];
+  if (!file) {
+    photoImg = null;
+    draw();
+    return;
+  }
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+  img.onload = () => {
+    photoImg = img;
+    draw();
+  };
+});
+// ===============================================
+
 
 // canvas → blob を await できる形に
 function canvasToBlob(cnv, type="image/png", quality=0.92) {
@@ -140,6 +162,50 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
     });
 
 });
+// ====== 追加：canvas上で写真をドラッグ移動 ======
+function getMousePos(evt) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+  };
+}
+
+function isInsidePhoto(mx, my) {
+  return (
+    photoImg &&
+    mx >= photoX && mx <= photoX + photoW &&
+    my >= photoY && my <= photoY + photoH
+  );
+}
+
+canvas.addEventListener("mousedown", (e) => {
+  const { x, y } = getMousePos(e);
+  if (isInsidePhoto(x, y)) {
+    dragging = true;
+    dragOffsetX = x - photoX;
+    dragOffsetY = y - photoY;
+  }
+});
+
+canvas.addEventListener("mousemove", (e) => {
+  if (!dragging) return;
+  const { x, y } = getMousePos(e);
+
+  photoX = x - dragOffsetX;
+  photoY = y - dragOffsetY;
+
+  // はみ出し防止（不要なら消してOK）
+  photoX = Math.max(0, Math.min(photoX, canvas.width - photoW));
+  photoY = Math.max(0, Math.min(photoY, canvas.height - photoH));
+
+  draw();
+});
+
+window.addEventListener("mouseup", () => {
+  dragging = false;
+});
+// ===============================================
 
 // 初期描画
 draw();
