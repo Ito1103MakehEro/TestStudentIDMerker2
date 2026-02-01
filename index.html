@@ -226,11 +226,6 @@ canvas.addEventListener("mousemove", (e) => {
 
   photoX = x - dragOffsetX;
   photoY = y - dragOffsetY;
-
-  // はみ出し防止（不要なら消してOK）
-  photoX = Math.max(0, Math.min(photoX, canvas.width - photoW));
-  photoY = Math.max(0, Math.min(photoY, canvas.height - photoH));
-
   draw();
 });
 
