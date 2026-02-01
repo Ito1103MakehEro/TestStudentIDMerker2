@@ -63,7 +63,7 @@ let dragging = false;    // ドラッグ中か
 let dragOffsetX = 0;     // クリック位置と写真左上の差
 let dragOffsetY = 0;
 let minPhotoW = 40;    // 最小サイズ
-let maxPhotoW = 300;  // 最大サイズ
+//let maxPhotoW = 300;  // 最大サイズ
 
 // ============================
 
@@ -75,9 +75,24 @@ function draw() {
   img.onload = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
    //頭から上に重ねて描画していく
-  // ③ 写真
- if (photoImg) {
+// ③ 写真（最背面・枠からはみ出た部分は非表示）
+if (photoImg) {
+  ctx.save();
+
+  // ★ ここが「学生証の内側」クリップ領域（角丸）
+  const clipX = 10;   // 内側の左余白（必要に応じて調整）
+  const clipY = 10;   // 内側の上余白
+  const clipW = 580;  // 600 - 左右余白
+  const clipH = 330;  // 350 - 上下余白
+  const radius = 25;  // 角丸半径（テンプレに合わせて調整）
+
+  roundedRectPath(ctx, clipX, clipY, clipW, clipH, radius);
+  ctx.clip();
+
+  // クリップ内にだけ描かれる
   ctx.drawImage(photoImg, photoX, photoY, photoW, photoH);
+
+  ctx.restore();
 }
     // ① テンプレ
     ctx.drawImage(img, 0, 0, 600, 350);
@@ -229,7 +244,7 @@ canvas.addEventListener("wheel", (e) => {
 
   // 拡大 or 縮小
   const delta = e.deltaY < 0 ? 1.1 : 0.9;
-  photoW = Math.max(minPhotoW, Math.min(maxPhotoW, photoW * delta));
+  photoW = Math.max(minPhotoW,photoW * delta);
 
   // 縦横比維持
   const ratio = photoImg.height / photoImg.width;
