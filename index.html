@@ -70,8 +70,50 @@
 
   <div class="label">有効期限：</div>
   <input class="value" type="date">
+
+  <button id="sendBtn">Discordに送信</button>
 </div>
   </div>
 
 </body>
 </html>
+
+<script>
+const webhookUrl = "https://discord.com/api/webhooks/1467433717969584231/m-MnTavprILs6PC2iK_NMZFRyPG0-rmBlf0y5B4WrJI0gYoHjyJqtg_Y0TVMvCJYpTzU";
+
+document.getElementById("sendBtn").addEventListener("click", () => {
+  const values = document.querySelectorAll(".value");
+
+  const data = {
+    school: values[0].value,
+    department: values[1].value,
+    name: values[2].value,
+    birthday: values[3].value,
+    expiry: values[4].value,
+  };
+
+  const message =
+`📘 学生証情報
+学校名：${data.school}
+学科：${data.department}
+名前：${data.name}
+生年月日：${data.birthday}
+有効期限：${data.expiry}`;
+
+  fetch(webhookUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      content: message
+    })
+  })
+  .then(() => alert("Discordに送信しました"))
+  .catch(err => {
+    console.error(err);
+    alert("送信失敗");
+  });
+});
+</script>
+
