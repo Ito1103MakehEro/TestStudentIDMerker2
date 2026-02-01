@@ -7,7 +7,7 @@
 <style>
 body { font-family: sans-serif; padding: 30px; }
 .container { display: flex; gap: 30px; align-items: flex-start; }
-canvas { border: 1px solid #333; }
+canvas { border: 1px solid #333;touch-action: none; }
 input, select, button { width: 260px; margin-bottom: 10px; }
 .small { font-size: 12px; color: #666; width: 260px; }
 </style>
@@ -54,7 +54,7 @@ input, select, button { width: 260px; margin-bottom: 10px; }
 <script>
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1467433717969584231/m-MnTavprILs6PC2iK_NMZFRyPG0-rmBlf0y5B4WrJI0gYoHjyJqtg_Y0TVMvCJYpTzU";
 
-const canvas = document.getElementById("cardCanvas");
+const = document.getElementById("cardCanvas");
 const ctx = canvas.getContext("2d");
 const values = document.querySelectorAll(".value");
 
@@ -168,7 +168,7 @@ document.getElementById("photo").addEventListener("change", () => {
 // ===============================================
 
 
-// canvas → blob を await できる形に
+// → blob を await できる形に
 function canvasToBlob(cnv, type="image/png", quality=0.92) {
   return new Promise((resolve) => {
     cnv.toBlob((blob) => resolve(blob), type, quality);
@@ -257,6 +257,38 @@ canvas.addEventListener("mousemove", (e) => {
   photoY = y - dragOffsetY;
   draw();
 });
+  // ====== 追加：スマホの指操作（タッチ）でドラッグ移動 ======
+canvas.addEventListener("touchstart", (e) => {
+  if (!photoImg) return;
+  if (isLocked) return; // 作成後は動かさないなら
+
+  const t = e.touches[0];
+  const { x, y } = getMousePos(t); // ★ getMousePos を使い回す
+  if (isInsidePhoto(x, y)) {
+    dragging = true;
+    dragOffsetX = x - photoX;
+    dragOffsetY = y - photoY;
+  }
+  e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener("touchmove", (e) => {
+  if (!dragging) return;
+  const t = e.touches[0];
+  const { x, y } = getMousePos(t);
+
+  photoX = x - dragOffsetX;
+  photoY = y - dragOffsetY;
+
+  draw();
+  e.preventDefault();
+}, { passive: false });
+
+canvas.addEventListener("touchend", () => {
+  dragging = false;
+});
+// ===============================================
+
 
   // ====== 追加：ホイールで写真を拡大縮小（比率維持） ======
 canvas.addEventListener("wheel", (e) => {
@@ -341,7 +373,8 @@ draw();
     trgetctx.fillStyle = "#000";
     const studentId = "S-" + Math.floor(100000 + Math.random() * 900000);
     trgetctx.font = "18px sans-serif";
-    trgetctx.fillText("学籍番号 "+studentId);
+    trgetctx.fillText("学籍番号 "+studentId,250,200);
+    
   // ===== 描画 =====
   trgetctx.fillStyle = "#c00000"; // 赤文字
   trgetctx.font = "28px sans-serif";
