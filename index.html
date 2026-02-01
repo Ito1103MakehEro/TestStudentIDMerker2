@@ -186,9 +186,9 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
 
   // ★ 元写真ファイルを送る
   const file = document.getElementById("photo").files[0];
-  
+  if(file){
   const filename = file.name || "photo.png";
-
+  }
   const formData = new FormData();
 
   const payload = {
@@ -218,10 +218,6 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
     method: "POST",
     body: formData
   });
-// ====== 追加：画面下に画像を並べて表示 ======
-const markedDataURL = createMarkedImage(canvas);
-
-
   // （必要なら）画面下の表示は今まで通り残せます
   const selected = document.getElementById("template").value;
    const backImage = (selected === "red") ? "学生証_裏1.png" : "学生証_裏2.png";
