@@ -534,13 +534,13 @@ drawSchoolLabel(tctx,
   document.getElementById("template").value,
   values[0].value || ""
 );
-    if (template === "blue") {
+    
  // ③ 印鑑を重ねる（★ここ）
   if (inkanImg.complete) {
     const INKAN_SIZE = 90; // 印鑑のサイズ
-    const x = 400;
+    const x = 350;
     const y = 200;
-
+if (template === "blue") {
     tctx.drawImage(
       inkanImg,
       x,
