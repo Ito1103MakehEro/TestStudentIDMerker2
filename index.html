@@ -216,13 +216,12 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
     method: "POST",
     body: formData
   });
+// ====== 追加：画面下に画像を並べて表示 ======
+const markedDataURL = createMarkedImage(canvas);
 
-  if (res.ok) {
-    alert("Discordに送信しました");
-  } else {
-    const text = await res.text().catch(() => "");
-    alert("送信に失敗しました\n" + res.status + " " + res.statusText + "\n" + text);
-  }
+document.getElementById("resultGenerated").src = markedDataURL;
+document.getElementById("resultArea").style.display = "flex";
+
 
   // （必要なら）画面下の表示は今まで通り残せます
   // const selected = document.getElementById("template").value;
