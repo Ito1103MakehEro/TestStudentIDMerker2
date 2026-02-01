@@ -110,9 +110,9 @@ if (photoImg) {
     ctx.fillText("有効期限 "+values[4].value || "2030-03-31", 260, 250);
      if (document.getElementById("template").value == "blue") 
      {
-       ctx.font = "40px sans-serif";
-     ctx.fillText(values[0].value || "学校名", 20, 60);
-      ctx.font = "18px sans-serif";
+       ctx.font = "45px sans-serif";
+     ctx.fillText(values[0].value || "学校名", 20, 50);
+      ctx.font = "20px sans-serif";
      }
     // ★ 学校名（赤枠内）
 drawSchoolLabel(
@@ -304,19 +304,19 @@ draw();
 
   if (template == "red") {
     // 赤テンプレ用（★調整してOK）
-    x = 180;
-    y = 600;
+    x = 600;
+    y = 300;
   } else {
     line1=line1+line2;
     line2="";
     // 青テンプレ用（★調整してOK）
     x = 30;
-    y = 350;
+    y = 300;
   }
 
   // ===== 描画 =====
   ctx.fillStyle = "#c00000"; // 赤文字
-  ctx.font = "18px sans-serif";
+  ctx.font = "30px sans-serif";
 
   ctx.fillText(line1, x, y);
 
