@@ -64,6 +64,8 @@ let dragOffsetX = 0;     // クリック位置と写真左上の差
 let dragOffsetY = 0;
 let minPhotoW = 40;    // 最小サイズ
 //let maxPhotoW = 300;  // 最大サイズ
+let isLocked = false; // 作成ボタンを押したらtrue（右クリック禁止）
+
 
 // ============================
 
@@ -279,6 +281,11 @@ canvas.addEventListener("wheel", (e) => {
 window.addEventListener("mouseup", () => {
   dragging = false;
 });
+  canvas.addEventListener("contextmenu", (e) => {
+  if (!isLocked) return;      // 作成前は普通に右クリックOK
+  e.preventDefault();         // 作成後だけ右クリックメニュー無効
+});
+
 // ===============================================
 
 // 初期描画
