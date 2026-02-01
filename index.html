@@ -103,13 +103,14 @@ if (photoImg) {
     ctx.fillStyle = "#000";
     ctx.font = "18px sans-serif";
 
-    ctx.fillText(values[0].value || "学校名", 250, 120);
-    ctx.fillText(values[1].value || "", 250, 150);
+    ctx.fillText(values[0].value || "学校名", 250, 100);
+    ctx.fillText(values[1].value || "", 250, 130);
     ctx.font = "30px sans-serif";
-    ctx.fillText(values[2].value || "名無しの権兵衛", 250, 180);
-    ctx.font = "18px sans-serif";
+    ctx.fillText(values[2].value || "名無しの権兵衛", 250, 150);
+    ctx.font = "10px sans-serif";
     ctx.fillText("生年月日 "+values[3].value || "2000-01-01", 260, 220);
     ctx.fillText("有効期限 "+values[4].value || "2030-03-31", 260, 250);
+    ctx.font = "18px sans-serif";
      if (document.getElementById("template").value == "blue") 
      {
        ctx.font = "45px sans-serif";
