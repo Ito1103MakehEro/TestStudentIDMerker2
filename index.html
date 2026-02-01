@@ -79,7 +79,8 @@ let isLocked = false; // 作成ボタンを押したらtrue（右クリック禁
 // ====== ピンチ用 ======
 let pinchStartDist = 0;
 let pinchStartW = 0;
-
+let pinchStartX = 0;
+let pinchStartY = 0;
 // ============================
 function getTouchDistance(t1, t2) {
   const dx = t1.clientX - t2.clientX;
@@ -89,8 +90,8 @@ function getTouchDistance(t1, t2) {
 
 function getTouchCenter(t1, t2) {
   return {
-    x: (t1.clientX + t2.clientX) / 2,
-    y: (t1.clientY + t2.clientY) / 2
+    clientX: (t1.clientX + t2.clientX) / 2,
+    clientY: (t1.clientY + t2.clientY) / 2
   };
 }
 
@@ -292,6 +293,8 @@ canvas.addEventListener("touchstart", (e) => {
     // ---- 2本指：ピンチ開始 ----
     pinchStartDist = getTouchDistance(e.touches[0], e.touches[1]);
     pinchStartW = photoW;
+    pinchStartX = photoX;
+    pinchStartY = photoY;
     dragging = false; // 移動は止める
   }
 
@@ -323,10 +326,11 @@ canvas.addEventListener("touchmove", (e) => {
     // ピンチ中心を基準に拡大
     const center = getTouchCenter(e.touches[0], e.touches[1]);
     const { x, y } = getMousePos(center);
-
+    
     const scaleW = newW / photoW;
     photoX = x - (x - photoX) * scaleW;
     photoY = y - (y - photoY) * scaleW;
+
 
     photoW = newW;
     photoH = newH;
