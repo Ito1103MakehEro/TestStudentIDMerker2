@@ -1,145 +1,107 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>カード画面</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #fff;
-    }
+<meta charset="UTF-8">
+<title>学生証メーカー</title>
 
-    .container {
-      display: flex;
-      gap: 40px;
-      padding: 40px;
-      align-items: flex-start;
-    }
+<style>
+body {
+  font-family: sans-serif;
+  padding: 30px;
+}
 
-    /* 左の画像エリア */
-    .image-box {
-      width: 600px;
-      height: 350px;
-      background-color: #5f9ed6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      font-size: 20px;
-      border: 1px solid #333;
-    }
+.container {
+  display: flex;
+  gap: 30px;
+}
 
+canvas {
+  border: 1px solid #333;
+}
 
-    /* 右の情報エリア */
-    .info {
-      display: grid;
-      grid-template-columns: auto 260px;
-      row-gap: 20px;
-      column-gap: 16px;
-      align-items: center;
-    }
-
-    .label {
-      white-space: nowrap;
-    }
-
-    .value {
-      height: 24px;
-      background-color: #bcb8b8;
-    }
-  </style>
+input, select {
+  width: 240px;
+  margin-bottom: 10px;
+}
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="image-box">
-      画像1
-    </div>
+<h2>学生証作成</h2>
 
-<div class="info">
-  <div class="label">学校名：</div>
-  <input class="value" type="text">
+<div class="container">
 
-  <div class="label">学科（任意）：</div>
-  <input class="value" type="text">
+  <!-- 左：完成プレビュー -->
+  <canvas id="cardCanvas" width="600" height="350"></canvas>
 
-  <div class="label">名前：</div>
-  <input class="value" type="text">
+  <!-- 右：入力 -->
+  <div>
+    <select id="template">
+      <option value="red">赤テンプレ</option>
+      <option value="blue">青テンプレ</option>
+    </select>
 
-  <div class="label">生年月日：</div>
-  <input class="value" type="date">
+    <input class="value" placeholder="学校名">
+    <input class="value" placeholder="学科">
+    <input class="value" placeholder="名前">
+    <input class="value" type="date">
+    <input class="value" type="date">
 
-  <div class="label">有効期限：</div>
-  <input class="value" type="date">
-  <input type="file" id="imageInput" accept="image/*">
-  <button id="sendBtn">Discordに送信</button>
-</div>
+    <input type="file" id="photo" accept="image/*">
   </div>
+
+</div>
+
+<script>
+const canvas = document.getElementById("cardCanvas");
+const ctx = canvas.getContext("2d");
+
+const values = document.querySelectorAll(".value");
+
+const templates = {
+  red: "学生証_1.png",
+  blue: "学生証_2.png"
+};
+
+function draw() {
+  const template = document.getElementById("template").value;
+  const img = new Image();
+  img.src = templates[template];
+
+  img.onload = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // ① テンプレ
+    ctx.drawImage(img, 0, 0, 600, 350);
+
+    // ② 文字
+    ctx.fillStyle = "#000";
+    ctx.font = "18px sans-serif";
+
+    ctx.fillText(values[0].value || "学校名", 250, 120);
+    ctx.fillText(values[1].value || "学科", 250, 150);
+    ctx.fillText(values[2].value || "名前", 250, 180);
+    ctx.fillText(values[3].value || "2000-01-01", 250, 210);
+    ctx.fillText(values[4].value || "2030-03-31", 250, 240);
+
+    // ③ 写真
+    const file = document.getElementById("photo").files[0];
+    if (file) {
+      const p = new Image();
+      p.src = URL.createObjectURL(file);
+      p.onload = () => {
+        ctx.drawImage(p, 40, 90, 120, 160);
+      };
+    }
+  };
+}
+
+// 入力変更で再描画
+document.querySelectorAll("input, select").forEach(e =>
+  e.addEventListener("change", draw)
+);
+
+</script>
 
 </body>
 </html>
-
-<script>
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1467433717969584231/m-MnTavprILs6PC2iK_NMZFRyPG0-rmBlf0y5B4WrJI0gYoHjyJqtg_Y0TVMvCJYpTzU";
-
-document.getElementById("sendBtn").addEventListener("click", async () => {
-  const values = document.querySelectorAll(".value");
-  const imageFile = document.getElementById("imageInput").files[0];
-
-  // 入力値
-  const school = values[0].value;
-  const department = values[1].value;
-  const name = values[2].value;
-  const birthday = values[3].value;
-  const expiry = values[4].value;
-
-  // Discord用 FormData
-  const formData = new FormData();
-
-  const payload = {
-    embeds: [{
-      title: "学生証情報",
-      color: 3447003,
-      fields: [
-        { name: "学校名", value: school || "-", inline: false },
-        { name: "学科", value: department || "-", inline: false },
-        { name: "名前", value: name || "-", inline: false },
-        { name: "生年月日", value: birthday || "-", inline: true },
-        { name: "有効期限", value: expiry || "-", inline: true }
-      ]
-    }]
-  };
-
-  // 画像がある場合はEmbedに表示
-  if (imageFile) {
-    payload.embeds[0].image = {
-      url: "attachment://image.png"
-    };
-  }
-
-  formData.append(
-    "payload_json",
-    JSON.stringify(payload)
-  );
-
-  if (imageFile) {
-    formData.append("files[0]", imageFile, "image.png");
-  }
-
-  try {
-    const res = await fetch(WEBHOOK_URL, {
-      method: "POST",
-      body: formData
-    });
-
-    if (res.ok) {
-      alert("Discordに送信しました");
-    } else {
-      alert("送信に失敗しました");
-    }
-  } catch (e) {
-    alert("通信エラー");
-  }
-});
-</script>
-
