@@ -143,10 +143,6 @@ document.getElementById("photo").addEventListener("change", () => {
   const ratio = img.height / img.width; // 高さ / 幅
   photoH = Math.round(photoW * ratio);
 
-  // はみ出し防止（高さが変わるので一応補正）
-  photoX = Math.max(0, Math.min(photoX, canvas.width - photoW));
-  photoY = Math.max(0, Math.min(photoY, canvas.height - photoH));
-
   draw();
 };
 });
