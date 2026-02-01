@@ -304,19 +304,21 @@ draw();
 
   if (template === "red") {
     // 赤テンプレ用（★調整してOK）
-    x = 300;
-    y = 320;
+     line1="認";
+    line2="可";
+    x = 500;
+    y = 300;
   } else {
     line1=line1+line2;
     line2="";
     // 青テンプレ用（★調整してOK）
     x = 30;
-    y = 320;
+    y = 300;
   }
 
   // ===== 描画 =====
   ctx.fillStyle = "#c00000"; // 赤文字
-  ctx.font = "30px sans-serif";
+  ctx.font = "28px sans-serif";
 
   ctx.fillText(line1, x, y);
 
