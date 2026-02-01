@@ -133,6 +133,9 @@ let pinchStartDist = 0;
 let pinchStartW = 0;
 let pinchStartX = 0;
 let pinchStartY = 0;
+let pinchStartCenterX = 0;
+let pinchStartCenterY = 0;
+
 // ============================
 function getTouchDistance(t1, t2) {
   const dx = t1.clientX - t2.clientX;
@@ -376,14 +379,19 @@ canvas.addEventListener("touchstart", (e) => {
     }
   }
 
-  if (e.touches.length === 2) {
-    // ---- 2本指：ピンチ開始 ----
-    pinchStartDist = getTouchDistance(e.touches[0], e.touches[1]);
-    pinchStartW = photoW;
-    pinchStartX = photoX;
-    pinchStartY = photoY;
-    dragging = false; // 移動は止める
-  }
+if (e.touches.length === 2) {
+  pinchStartDist = getTouchDistance(e.touches[0], e.touches[1]);
+  pinchStartW = photoW;
+  pinchStartX = photoX;
+  pinchStartY = photoY;
+
+  const center = getTouchCenter(e.touches[0], e.touches[1]);
+  const c = getMousePos(center);
+  pinchStartCenterX = c.x;
+  pinchStartCenterY = c.y;
+
+  dragging = false;
+}
 
   e.preventDefault();
 }, { passive: false });
@@ -404,28 +412,26 @@ constrainPhotoToFrame(); // ★追加
   }
 
   // ---- 2本指：ピンチ拡大縮小 ----
-  if (e.touches.length === 2) {
-    const dist = getTouchDistance(e.touches[0], e.touches[1]);
-    const scale = dist / pinchStartDist;
+ if (e.touches.length === 2) {
+  const dist = getTouchDistance(e.touches[0], e.touches[1]);
+  const scale = dist / pinchStartDist;
 
-    const newW = Math.max(minPhotoW, pinchStartW * scale);
-    const ratio = photoImg.height / photoImg.width;
-    const newH = newW * ratio;
+  const newW = Math.max(minPhotoW, pinchStartW * scale);
+  const ratio = photoImg.height / photoImg.width;
+  const newH = newW * ratio;
 
-    // ピンチ中心を基準に拡大
-    const center = getTouchCenter(e.touches[0], e.touches[1]);
-    const { x, y } = getMousePos(center);
-    
-    const scaleW = newW / photoW;
-    photoX = x - (x - photoX) * scaleW;
-    photoY = y - (y - photoY) * scaleW;
+  // ★ ピンチ開始時の中心を基準に、開始時のX/Yから計算する（ここが重要）
+  const s = newW / pinchStartW;
+  photoX = pinchStartCenterX - (pinchStartCenterX - pinchStartX) * s;
+  photoY = pinchStartCenterY - (pinchStartCenterY - pinchStartY) * s;
 
+  photoW = newW;
+  photoH = newH;
 
-    photoW = newW;
-    photoH = newH;
-    constrainPhotoToFrame(); 
-    draw();
-  }
+  constrainPhotoToFrame();
+  draw();
+}
+
 
   e.preventDefault();
 }, { passive: false });
