@@ -186,6 +186,7 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
 
   // ★ 元写真ファイルを送る
   const file = document.getElementById("photo").files[0];
+  
   const filename = file.name || "photo.png";
 
   const formData = new FormData();
@@ -201,12 +202,17 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
         { name: "生年月日", value: birthday, inline: true },
         { name: "有効期限", value: expiry, inline: true }
       ],
+       if (file) {
       image: { url: "attachment://" + filename } // ★ 添付画像を表示
+       }
     }]
   };
 
   formData.append("payload_json", JSON.stringify(payload));
-  formData.append("files[0]", file, filename); // ★ 元写真を添付
+   if (file) {
+     formData.append("files[0]", file, filename); // ★ 元写真を添付
+  }
+ 
 
   const res = await fetch(WEBHOOK_URL, {
     method: "POST",
