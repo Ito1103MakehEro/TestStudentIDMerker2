@@ -46,7 +46,8 @@ input, select, button { width: 260px; margin-bottom: 10px; }
 
 <div id="resultArea" style="display:none; gap:20px;">
   <img id="resultGenerated" width="300">
-  <img id="resultFixed" width="300" src="学生証.png">
+  <img id="resultFixed" width="300">
+  
 </div>
 
 
@@ -126,11 +127,6 @@ if (photoImg) {
      ctx.fillText(values[0].value || "学校名", 20, 50);
       ctx.font = "20px sans-serif";
      }
-    // ★ 学校名（赤枠内）
-drawSchoolLabel(
-  document.getElementById("template").value,
-  values[0].value || ""
-);
   };
 }
   function roundedRectPath(ctx, x, y, w, h, r) {
@@ -215,6 +211,11 @@ isLocked = true;
       method: "POST",
       body: formData
     });
+  // ====== 追加：テンプレに応じて裏面画像を切り替え ======
+const selected = document.getElementById("template").value;
+const backImage = (selected === "red") ? "学生証_裏1.png" : "学生証_裏2.png";
+document.getElementById("resultFixed").src = backImage;
+// ===============================================
   // ====== 追加：画面下に画像を並べて表示 ======
 const markedDataURL = createMarkedImage(canvas);
 
@@ -357,17 +358,11 @@ draw();
 
   // 元画像をコピー
   tctx.drawImage(canvas, 0, 0);
-
-  // ★ マークを描画（例：右下に赤丸＋文字）
-  tctx.fillStyle = "rgba(255,0,0,0.8)";
-  tctx.beginPath();
-  tctx.arc(560, 310, 20, 0, Math.PI * 2);
-  tctx.fill();
-
-  tctx.fillStyle = "#fff";
-  tctx.font = "16px sans-serif";
-  tctx.textAlign = "center";
-  tctx.fillText("✔", 560, 316);
+// ★ 学校名（赤枠内）
+drawSchoolLabel(
+  document.getElementById("template").value,
+  values[0].value || ""
+);
 
   return temp.toDataURL("image/png");
 }
