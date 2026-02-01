@@ -81,6 +81,35 @@ function getPhotoFrame(template) {
     return { x: 40, y: 90, w: 140, h: 160 }; // ←青テンプレの枠（違うならここを変更）
   }
 }
+  function constrainPhotoToFrame() {
+  if (!photoImg) return;
+
+  const template = document.getElementById("template").value;
+  const frame = getPhotoFrame(template);
+
+  // もし写真が枠より小さいなら、最低限枠サイズまで拡大（任意）
+  // 枠より小さいと絶対に空白が出るので、出したくない場合は必要
+  if (photoW < frame.w) {
+    const s = frame.w / photoW;
+    photoW *= s;
+    photoH *= s;
+  }
+  if (photoH < frame.h) {
+    const s = frame.h / photoH;
+    photoW *= s;
+    photoH *= s;
+  }
+
+  // 枠が常に写真で覆われる範囲にクランプ
+  // X: photoX は [frame.x + frame.w - photoW, frame.x] の間
+  const minX = frame.x + frame.w - photoW;
+  const maxX = frame.x;
+  const minY = frame.y + frame.h - photoH;
+  const maxY = frame.y;
+
+  photoX = Math.min(maxX, Math.max(minX, photoX));
+  photoY = Math.min(maxY, Math.max(minY, photoY));
+}
 
   // ====== 追加：写真の状態 ======
 let photoImg = null;     // アップロード画像を保持
@@ -127,17 +156,14 @@ function draw() {
 if (photoImg) {
   ctx.save();
 
-  // ★ ここが「学生証の内側」クリップ領域（角丸）
-  const clipX = 10;   // 内側の左余白（必要に応じて調整）
-  const clipY = 10;   // 内側の上余白
-  const clipW = 580;  // 600 - 左右余白
-  const clipH = 330;  // 350 - 上下余白
-  const radius = 25;  // 角丸半径（テンプレに合わせて調整）
+  const template = document.getElementById("template").value;
+  const frame = getPhotoFrame(template);
 
-  roundedRectPath(ctx, clipX, clipY, clipW, clipH, radius);
+  // ★写真枠（四角）でクリップ（角丸いらなければrectだけでOK）
+  ctx.beginPath();
+  ctx.rect(frame.x, frame.y, frame.w, frame.h);
   ctx.clip();
 
-  // クリップ内にだけ描かれる
   ctx.drawImage(photoImg, photoX, photoY, photoW, photoH);
 
   ctx.restore();
@@ -315,6 +341,7 @@ canvas.addEventListener("mousemove", (e) => {
 
   photoX = x - dragOffsetX;
   photoY = y - dragOffsetY;
+  constrainPhotoToFrame(); // ★追加
   draw();
 });
   // ====== 追加：スマホの指操作（タッチ）でドラッグ移動 ======
@@ -355,6 +382,8 @@ canvas.addEventListener("touchmove", (e) => {
     const { x, y } = getMousePos(t);
     photoX = x - dragOffsetX;
     photoY = y - dragOffsetY;
+    
+constrainPhotoToFrame(); // ★追加
     draw();
   }
 
@@ -378,7 +407,7 @@ canvas.addEventListener("touchmove", (e) => {
 
     photoW = newW;
     photoH = newH;
-
+    constrainPhotoToFrame(); 
     draw();
   }
 
@@ -422,7 +451,7 @@ canvas.addEventListener("wheel", (e) => {
   // はみ出し防止
   photoX = Math.max(0, Math.min(photoX, canvas.width - photoW));
   photoY = Math.max(0, Math.min(photoY, canvas.height - photoH));
-
+  constrainPhotoToFrame(); 
   draw();
 }, { passive: false });
 // ===============================================
