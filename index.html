@@ -8,7 +8,7 @@
 <style>
 body { font-family: sans-serif; padding: 30px; }
 .container { display: flex; gap: 30px; align-items: flex-start; }
-canvas { border: none; touch-action: none; }
+canvas { border: 1px solid #333;touch-action: none; }
 input, select, button { width: 260px; margin-bottom: 10px; }
 .small { font-size: 12px; color: #666; width: 260px; }
   .fieldLabel{
@@ -100,16 +100,7 @@ input, select, button { width: 260px; margin-bottom: 10px; }
 
 
 <script>
-let WEBHOOK_URL = ""; // ← txtから読み込んで入れる
-
-async function loadWebhookUrl() {
-  const res = await fetch("URL.txt", { cache: "no-store" });
-  const text = await res.text();
-
-  const url = text.trim();
-
-  WEBHOOK_URL = url;
-}
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1467433717969584231/m-MnTavprILs6PC2iK_NMZFRyPG0-rmBlf0y5B4WrJI0gYoHjyJqtg_Y0TVMvCJYpTzU";
 
   // ★ 印鑑画像
 const inkanImg = new Image();
