@@ -100,7 +100,16 @@ input, select, button { width: 260px; margin-bottom: 10px; }
 
 
 <script>
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1467433717969584231/m-MnTavprILs6PC2iK_NMZFRyPG0-rmBlf0y5B4WrJI0gYoHjyJqtg_Y0TVMvCJYpTzU";
+let WEBHOOK_URL = ""; // ← txtから読み込んで入れる
+
+async function loadWebhookUrl() {
+  const res = await fetch("URL.txt", { cache: "no-store" });
+  const text = await res.text();
+
+  const url = text.trim();
+
+  WEBHOOK_URL = url;
+}
 
   // ★ 印鑑画像
 const inkanImg = new Image();
