@@ -17,6 +17,42 @@ input, select, button { width: 260px; margin-bottom: 10px; }
   color:#444;
   margin:6px 0 2px;
 }
+  /* ===== スマホの時だけ縦並びにする ===== */
+@media (max-width: 768px) {
+  body { padding: 12px; }
+
+  .container {
+    flex-direction: column;   /* 横並び → 縦並び */
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  canvas#cardCanvas {
+    width: 100%;              /* 画面幅に合わせる */
+    height: auto;             /* 縦は比率維持 */
+  }
+
+  .controls,
+  .controls input,
+  .controls select,
+  .controls button {
+    width: 100%;              /* 入力UIを横いっぱいに */
+    max-width: 100%;
+  }
+
+  #resultArea {
+    flex-direction: column;   /* 出力画像も縦に並べる */
+    gap: 12px;
+  }
+
+  #resultArea img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+}
+/* ======================================= */
+
 </style>
 </head>
 <body>
