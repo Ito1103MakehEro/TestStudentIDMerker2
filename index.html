@@ -66,7 +66,7 @@ input, select, button { width: 260px; margin-bottom: 10px; }
   <canvas id="cardCanvas" width="600" height="350"></canvas>
 
   <!-- 右：入力 -->
-  <div>
+  <div class="controls">
     <select id="template">
       <option value="red">赤色学生証</option>
       <option value="blue">青色学生証</option>
@@ -87,7 +87,20 @@ input, select, button { width: 260px; margin-bottom: 10px; }
     <label class="fieldLabel">画像サイズはマウス、ピンチで変更してください。</label>
     <button id="sendBtn">作成</button>
   </div>
+.controls{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;          /* 各要素の間隔 */
+}
 
+.controls input,
+.controls select,
+.controls button,
+.controls .fieldLabel{
+  width: 260px;       /* 今の幅ルールを維持 */
+  max-width: 100%;
+  box-sizing: border-box;
+}
 </div>
   <hr>
 
