@@ -47,9 +47,9 @@ input, select, button { width: 260px; margin-bottom: 10px; }
   }
 
   #resultArea img {
-    width: 300px;      /* 表示したい横幅 */
-  height: auto;      /* ← これが重要：比率維持 */
-  object-fit: contain;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
   }
 }
 /* ======================================= */
@@ -94,8 +94,8 @@ input, select, button { width: 260px; margin-bottom: 10px; }
 <h3>生成結果</h3>
 
 <div id="resultArea" style="display:none; gap:20px;">
-  <img id="resultGenerated",width="300">
-  <img id="resultFixed",width="290">
+  <img id="resultGenerated" width="300">
+  <img id="resultFixed" width="300">
   
 </div>
 
@@ -206,8 +206,7 @@ ctx.drawImage(img, 0, 0, 600, 350);
 
 // ② 顔写真背景（テンプレと顔写真の間）
 if (faceBgImg.complete) {
-  ctx.drawImage(faceBgImg, 54, 91, 148, 178);
-  // x: 53, y: 90, w: 150, h: 180 
+  ctx.drawImage(faceBgImg, 0, 0, 600, 350);
 }
 
     
