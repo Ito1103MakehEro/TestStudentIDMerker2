@@ -47,9 +47,10 @@ input, select, button { width: 260px; margin-bottom: 10px; }
   }
 
   #resultArea img {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
+    width: 300px;      /* 表示したい横幅 */
+  height: auto;      /* ← これが重要：比率維持 */
+  aspect-ratio: 600 / 350; /* 元キャンバス比率（保険） */
+  object-fit: contain;
   }
 }
 /* ======================================= */
@@ -94,8 +95,8 @@ input, select, button { width: 260px; margin-bottom: 10px; }
 <h3>生成結果</h3>
 
 <div id="resultArea" style="display:none; gap:20px;">
-  <img id="resultGenerated" width="300">
-  <img id="resultFixed" width="300">
+  <img id="resultGenerated">
+  <img id="resultFixed">
   
 </div>
 
