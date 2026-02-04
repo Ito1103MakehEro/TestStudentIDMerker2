@@ -257,6 +257,21 @@ if (photoImg) {
   ctx.font = "20px sans-serif"; // 他の文字用に戻す
 }
   };
+
+  // ① テンプレ
+ctx.drawImage(img, 0, 0, 600, 350);
+
+// ===== Sample（プレビュー専用）=====
+ctx.save();
+ctx.globalAlpha = 0.15;        // 薄さ
+ctx.fillStyle = "#666";
+ctx.font = "bold 48px sans-serif";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText("Sample", canvas.width / 2, canvas.height / 2);
+ctx.restore();
+// ====================================
+
 }
   function roundedRectPath(ctx, x, y, w, h, r) {
   const rr = Math.min(r, w / 2, h / 2);
