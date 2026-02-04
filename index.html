@@ -202,12 +202,12 @@ function draw() {
     
 ctx.drawImage(img, 0, 0, 600, 350);
   const img = new Image();
-  img.src ="";
+  img.src ="顔写真背景.png";
 
   img.onload = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-ctx.drawImage(img, 53, 90);
-    
+ctx.drawImage(img, 535 92,148,178);
+    // x: 53, y: 90, w: 150, h: 180 
 // ===== Sample（プレビュー専用）=====
 ctx.save();
 ctx.globalAlpha = 0.15;
